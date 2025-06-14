@@ -38,6 +38,8 @@ Following the **Microservice Architecture** pattern, the Recommendation service 
                Redis (read model)
 ```
 
+⚠️ **Prerequisite:** JDK 17+ is required to build and run this service (Spring Boot 3 baseline).
+
 ## Build & Run locally
 1. **Spin up infra**
    ```bash
