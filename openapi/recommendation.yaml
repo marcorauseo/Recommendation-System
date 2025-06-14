@@ -1,0 +1,79 @@
+openapi: 3.1.0
+info:
+  title: Recommendation Service API
+  version: 0.1.1
+paths:
+  /v1/users/{userId}/recommendations:
+    get:
+      summary: Top‑N recommendations for a user
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recommendation'
+
+  /v1/events/rating:
+    post:
+      summary: Submit a rating event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingEventDto'
+      responses:
+        '202':
+          description: Accepted
+
+  /v1/events/playback:
+    post:
+      summary: Submit a playback progress event
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlayEventDto'
+      responses:
+        '202':
+          description: Accepted
+
+components:
+  schemas:
+    Recommendation:
+      type: object
+      properties:
+        userId:
+          type: string
+        movieId:
+          type: string
+        score:
+          type: number
+    RatingEventDto:
+      type: object
+      properties:
+        userId:
+          type: string
+        movieId:
+          type: string
+        rating:
+          type: integer
+    PlayEventDto:
+      type: object
+      properties:
+        userId:
+          type: string
+        movieId:
+          type: string
+        position:
+          type: integer

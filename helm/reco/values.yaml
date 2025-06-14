@@ -1,0 +1,10 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/contentwise/recommendation-service
+  tag: "0.0.1-SNAPSHOT"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80

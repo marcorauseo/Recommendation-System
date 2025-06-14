@@ -1,0 +1,61 @@
+#####################################
+#  Java / Maven                     #
+#####################################
+target/                       # output Maven build
+dependency-reduced-pom.xml
+release.properties
+*.class
+
+# Maven Wrapper
+.mvn/wrapper/maven-wrapper.jar
+
+#####################################
+#  IntelliJ IDEA / JetBrains        #
+#####################################
+.idea/                         # project settings
+*.iws
+*.iml
+*.ipr
+out/                           # IDEA compile output
+# Rider / Android Studio, ecc.
+.idea_modules/
+
+#####################################
+#  Logs & runtime files            #
+#####################################
+*.log
+hs_err_pid*
+*.hprof
+*.pid
+*.tmp
+
+#####################################
+#  OS-specific files               #
+#####################################
+.DS_Store                       # macOS
+Thumbs.db                       # Windows
+
+#####################################
+#  Docker / Compose               #
+#####################################
+docker-compose.override.yml
+.env
+*.local.yml
+**/compose/**/.env
+
+#####################################
+#  Testcontainers                  #
+#####################################
+testcontainers.properties
+
+#####################################
+#  Kubernetes / Helm               #
+#####################################
+helm/*/charts/
+*.tgz
+
+#####################################
+#  Misc build artefacts            #
+#####################################
+build/
+generated-sources/

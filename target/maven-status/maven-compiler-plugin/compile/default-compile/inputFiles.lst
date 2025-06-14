@@ -1,0 +1,14 @@
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\config\ResilienceConfig.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\controller\EventController.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\controller\RecommendationController.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\dto\PlayEventDto.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\dto\RatingEventDto.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\model\PlayEvent.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\model\RatingEvent.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\model\Recommendation.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\RecommendationServiceApplication.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\repository\PlayEventRepository.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\repository\RatingEventRepository.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\repository\RecommendationRepository.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\service\EventService.java
+C:\Users\Marco\Desktop\Recommendation System\src\main\java\com\contentwise\reco\service\RecommendationService.java
