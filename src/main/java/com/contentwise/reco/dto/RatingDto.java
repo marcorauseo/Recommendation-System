@@ -5,4 +5,4 @@ import java.time.Instant;
 public record RatingDto(Long movieId,
                         String movieTitle,
                         int rating,
-                        Instant ts) { }
+                        Instant ts, com.contentwise.reco.model.RatingEvent.Source source) { }
