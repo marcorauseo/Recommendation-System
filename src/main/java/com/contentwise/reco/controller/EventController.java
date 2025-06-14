@@ -16,16 +16,16 @@ public class EventController {
 
     private final EventService eventService;
 
-//    @PostMapping("/rating")
-//    public ResponseEntity<Void> rating(@RequestBody RatingEventDto dto) {
-//        RatingEvent ratingEvent = RatingEvent.builder()
-//                .id(dto.userId())
-//                .movieId(dto.movieId())
-//                .rating(dto.rating())
-//                .build();
-//        eventService.saveRating(ratingEvent);
-//        return ResponseEntity.accepted().build();
-//    }
+    @PostMapping("/rating")
+    public ResponseEntity<Void> rating(@RequestBody RatingEventDto dto) {
+        RatingEvent ratingEvent = RatingEvent.builder()
+                .id(dto.userId())
+                .id(dto.movieId())
+                .rating(dto.rating())
+                .build();
+        eventService.saveRating(ratingEvent);
+        return ResponseEntity.accepted().build();
+    }
 
     @PostMapping("/playback")
     public ResponseEntity<Void> playback(@RequestBody PlayEventDto dto) {
