@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://db.gukcmjypzytupzvzwxuj.supabase.co:5432/postgres?sslmode=require
+    username: postgres
+    password: marcorauseo
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate   # o update/none a tua scelta

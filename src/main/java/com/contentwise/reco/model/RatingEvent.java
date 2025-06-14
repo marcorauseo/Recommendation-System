@@ -3,19 +3,30 @@ package com.contentwise.reco.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Entity
-@Table(name = "rating_event")
-public class RatingEvent {
+import java.time.Instant;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@Entity @Table(
+        name = "rating_event",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"user_id","movie_id"})
+)
+@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+public class RatingEvent {
+    @Id @GeneratedValue
     private Long id;
 
-    private String userId;
-    private String movieId;
-    private int rating;
+    private Integer rating;               // 1..5
+
+    @Enumerated(EnumType.STRING)
+    private Source source;                // EXPLICIT / IMPLICIT
+
+    @Column(name="ts")
+    private Instant timestamp;
+
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name="user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name="movie_id")
+    private Movie movie;
+
+    public enum Source { EXPLICIT, IMPLICIT }
 }
