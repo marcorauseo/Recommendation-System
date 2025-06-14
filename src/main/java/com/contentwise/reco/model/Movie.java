@@ -14,10 +14,13 @@ import java.util.Set;
 public class Movie {
     @Id
     private Long id;
+
     private String title;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    @CollectionTable(name = "movie_genre", joinColumns = @JoinColumn(name = "movie_id"))
+    @CollectionTable(
+            name = "movie_genre",
+            joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "genre")
     private Set<String> genres = new HashSet<>();
 }

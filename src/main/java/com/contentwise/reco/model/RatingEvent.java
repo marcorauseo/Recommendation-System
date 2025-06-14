@@ -14,19 +14,19 @@ public class RatingEvent {
     @Id @GeneratedValue
     private Long id;
 
-    private Integer rating;               // 1..5
+    private Integer rating;
 
     @Enumerated(EnumType.STRING)
-    private Source source;                // EXPLICIT / IMPLICIT
+    private Source source;
 
-    @Column(name="ts")
-    private Instant timestamp;
+    private Instant ts;
 
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name="user_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name="movie_id")
+    @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name = "movie_id", nullable = false)
     private Movie movie;
 
     public enum Source { EXPLICIT, IMPLICIT }
 }
+

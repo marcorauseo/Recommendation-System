@@ -9,8 +9,8 @@ import java.time.Instant;
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class ViewEvent {
     @Id @GeneratedValue private Long id;
-    private Integer viewPercent;          // 0-100
-    @Column(name="ts") private Instant timestamp;
+    private Integer viewPercent;
+    @Column(name="ts") private Instant ts;
 
     @ManyToOne(fetch = FetchType.LAZY) @JoinColumn(name="user_id")
     private User user;

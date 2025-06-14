@@ -7,6 +7,7 @@ import com.contentwise.reco.repository.MovieRepository;
 import com.contentwise.reco.repository.RatingEventRepository;
 import com.contentwise.reco.repository.UserRepository;
 import com.contentwise.reco.repository.ViewEventRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
@@ -40,12 +41,13 @@ public class CsvBootstrap implements CommandLineRunner {
     private final RatingEventRepository ratingRepo;
     private final ViewEventRepository viewRepo;
 
+
+    @Transactional
     @Override
     public void run(String... args) throws Exception {
         loadMovies();
         loadUsers();
         loadRatingsAndViews();
-        log.info("CSV bootstrap completed");
     }
 
     /* ------------------------ LOADERS ------------------------ */
@@ -77,49 +79,54 @@ public class CsvBootstrap implements CommandLineRunner {
         }
     }
 
+    @Transactional
     private void loadRatingsAndViews() throws Exception {
+
         try (var in = new ClassPathResource("data/ratings.csv").getInputStream();
              var reader = new InputStreamReader(in, StandardCharsets.UTF_8);
-             var parser = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
+             var csv = new CSVParser(reader, CSVFormat.DEFAULT.withFirstRecordAsHeader())) {
 
-            parser.forEach(r -> {
-                long userId  = Long.parseLong(r.get("user_id"));
+            csv.forEach(r -> {
+
+                long userId = Long.parseLong(r.get("user_id"));
                 long movieId = Long.parseLong(r.get("movie_id"));
-                var timestamp = Instant.now();
 
-                /* explicit rating */
+                User user = userRepo.findById(userId).orElseThrow();
+                Movie movie = movieRepo.findById(movieId).orElseThrow();
+
+                Instant now = Instant.now();
+
+
                 if (!r.get("rating").isBlank()) {
                     ratingRepo.save(RatingEvent.builder()
-                            .id(userId)
-                            .id(movieId)
+                            .user(user)
+                            .movie(movie)
                             .rating(Integer.parseInt(r.get("rating")))
                             .source(RatingEvent.Source.EXPLICIT)
-                            .timestamp(timestamp)
+                            .ts(now)
                             .build());
                 }
 
-                /* view percentage → implicit rating */
-                if (!r.get("view_percentage").isBlank()) {
+                else if (!r.get("view_percentage").isBlank()) {
                     int percent = Integer.parseInt(r.get("view_percentage"));
+
                     viewRepo.save(ViewEvent.builder()
-                            .id(userId)
-                            .id(movieId)
+                            .user(user)
+                            .movie(movie)
                             .viewPercent(percent)
-                            .timestamp(timestamp)
+                            .ts(now)
                             .build());
 
-                    int implicitRating = percent > 80 ? 5 : (percent >= 60 ? 4 : 3);
+                    int implicit = percent > 80 ? 5 : (percent >= 60 ? 4 : 3);
                     ratingRepo.save(RatingEvent.builder()
-                            .id(userId)
-                            .id(movieId)
-                            .rating(implicitRating)
+                            .user(user)
+                            .movie(movie)
+                            .rating(implicit)
                             .source(RatingEvent.Source.IMPLICIT)
-                            .timestamp(timestamp)
+                            .ts(now)
                             .build());
                 }
             });
-            log.info("Loaded {} rating events, {} view events",
-                    ratingRepo.count(), viewRepo.count());
         }
     }
 }
