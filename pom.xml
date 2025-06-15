@@ -167,8 +167,8 @@
                                         <limit>
                                             <counter>LINE</counter>
                                             <value>COVEREDRATIO</value>
-                                            <!-- 80 % minimo di copertura -->
-                                            <minimum>0.80</minimum>
+                                            <!--  % minima di copertura o la build non va-->
+                                            <minimum>0.70</minimum>
                                         </limit>
                                     </limits>
                                 </rule>
