@@ -154,7 +154,7 @@ class RatingEventRepositoryTest {
             int rating = repo.findByUserIdAndMovieId(user.getId(), implicitMovie.getId())
                     .map(RatingEvent::getRating)
                     .orElse(-1);
-            assertThat(rating).isEqualTo(0);
+            assertThat(rating).isZero();
         }
     }
 }

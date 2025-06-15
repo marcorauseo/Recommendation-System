@@ -5,7 +5,6 @@ import com.contentwise.reco.dto.*;
 import com.contentwise.reco.model.Movie;
 import com.contentwise.reco.repository.*;
 import com.contentwise.reco.utils.MovieSpecs;
-import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

@@ -1,14 +1,11 @@
 package com.contentwise.reco.controller;
 
 import com.contentwise.reco.dto.MovieDto;
-import com.contentwise.reco.model.Recommendation;
 import com.contentwise.reco.service.RecommendationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/v1/users")

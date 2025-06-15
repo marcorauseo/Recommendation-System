@@ -54,16 +54,16 @@ Following the **Microservice Architecture** pattern, the Recommendation service 
 ## Patterns from Microservices.io applied
 
 | Concern | Pattern | How it is addressed |
-|---------|---------|---------------------|
-| Edge routing & cross‑cutting concerns | **API Gateway / BFF** | All external traffic flows through the company API‑Gateway, which authenticates, authorizes, rate‑limits and routes requests to service instances discovered via Kubernetes. |
+|-------|---------|--------------------|
+|
 | Service decomposition | **Decompose by business capability & sub‑domain** | Recommendation logic is isolated from Catalog, User, and Playback services, enabling independent scaling and deployments. |
-| Communication resilience | **Circuit Breaker** | Calls to external services (User, Catalog) use Resilience4j circuit breakers with 5‑second timeouts and exponential back‑off. |
+
 | Data ownership | **Database per Service** | Each service (Recommendation, User, Catalog, Billing…) owns its schema; direct cross‑service SQL joins are prohibited. |
-| Cross‑service consistency | **Saga (Choreography)** | User‑rating transactions emit `RatingCreated` events that trigger recommendation updates; compensations handled with an Outbox‑poller. |
-| Query aggregation | **API Composition & CQRS** | Read‑optimised Redis cache is built from Kafka streams; complex joins performed by a lightweight API‑Composer in‑memory. |
+| Cross‑service consistency | **Saga (Choreography)** | User‑rating transactions emit `RatingCreated` events that trigger recommendation updates; |
+| Query aggregation | **API Composition & CQRS**  |
 | Isolation & performance | **Bulkhead** | Dedicated thread‑pools per outbound dependency; execution timeouts enforced. |
 | Observability | **Health Check, Distributed Tracing, Structured Logging** | Spring Boot Actuator, OpenTelemetry OTLP exporter; logs shipped to Loki via Fluent Bit. |
-| Developer productivity | **Microservice Chassis** | Shared Spring Boot starter provides base Dockerfile, Helm chart & plugins. |
+| Developer productivity  | Shared Spring Boot starter provides base Dockerfile, Helm chart & plugins. |
 
 ## High‑level architecture
 ```
@@ -77,7 +77,7 @@ Following the **Microservice Architecture** pattern, the Recommendation service 
         └────────┬───────────┬──────────┘
                  │Kafka      │HTTP
                  ▼           ▼
-          PostgreSQL    Other services
+                 H2    Other services
                  │
                  ▼
                Redis (read model)
