@@ -1,5 +1,50 @@
 # Video Recommendation Service
 
+## How to test
+The entire application can be tested with Docker.
+
+The docker-compose file spins up 4 containers.
+
+From a bash prompt in the project root:
+
+docker compose up --build
+
+(you can also use docker plug in directly in intellij ide)
+
+Make sure all containers start successfully.
+
+Then, in your browser:
+
+Swagger UI (for testing synchronous calls):
+http://localhost:8080/swagger-ui/
+
+Kafdrop console (for testing asynchronous events and creating Kafka topics):
+http://localhost:9000/
+
+Example – Add Message:
+
+key: event_stream
+value: {"userId":1,"movieId":1,"type":"RATING","rating":4}
+
+
+In-memory database console (to inspect the database):
+http://localhost:8080/h2-console/
+
+The DB is filled at application start by the .csv in the data folder.
+
+jdbc url:jdbc:h2:mem:recodb
+user name: sa
+pss:
+
+Note: Because this app was built for a technical interview challenge, 
+an in-memory database was chosen to simplify testing, since large data volumes are not expected.
+
+## Test and debug without docker
+If u want to just test synchronous call and debug in intellij you can use local.yml profile 
+and comment kafka part in application.yml
+
+spring-boot:run -Dspring-boot.run.profiles=local
+
 ## Purpose
 This microservice generates **personalized movie & series recommendations** for each logged‑in user based on collaborative filtering and content similarity.
 
@@ -43,7 +88,7 @@ Following the **Microservice Architecture** pattern, the Recommendation service 
 ## Build & Run locally
 1. **Spin up infra**
    ```bash
-   git clone https://github.com/contentwise/recommendation-service.git
+   git clone https://github.com/marcorauseo/Recommendation-System
    cd recommendation-service
    make infra-up   # docker compose for Postgres, Kafka, Redis
    ```
@@ -84,7 +129,7 @@ paths:
 ```
 Full spec: `openapi/recommendation.yaml`.
 
-## Data model (PostgreSQL)
+## Data model (h2)
 | Table | Purpose |
 |-------|---------|
 | `rating_event` | user ratings (⭐1‑5) |

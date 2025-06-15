@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface MovieRepository extends JpaRepository<Movie, Long> {
 
 
@@ -37,4 +39,30 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
                                @Param("min")   Integer min,
                                @Param("max")   Integer max,
                                Pageable page);
+
+
+    @Query("""
+        SELECT new com.contentwise.reco.dto.MovieDto(
+                   m.id,
+                   m.title,
+                   COALESCE(AVG(r.rating), 0)
+           )
+        FROM Movie m
+        LEFT JOIN RatingEvent r     ON r.movie = m
+        WHERE m.id NOT IN (SELECT re.movie.id  FROM RatingEvent re WHERE re.user.id = :uid)
+          AND m.id NOT IN (SELECT ve.movie.id  FROM ViewEvent  ve WHERE ve.user.id = :uid)
+          AND (:genre IS NULL OR :genre IN elements(m.genres))
+        GROUP BY m.id, m.title
+        HAVING (:minRating IS NULL OR AVG(r.rating) >= :minRating)
+        ORDER BY COALESCE(AVG(r.rating), 0) DESC
+        """)
+    Page<MovieDto> findRecommendations(@Param("uid")        Long    uid,
+                             @Param("genre")      String  genre,
+                             @Param("minRating")  Integer minRating,
+                             Pageable pageable);
+
+
+
+
+
 }
