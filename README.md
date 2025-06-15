@@ -122,27 +122,161 @@ Following the **Microservice Architecture** pattern, the Recommendation service 
   helm install reco contentwise/recommendation -f values-dev.yaml
   ```
 
-## Configuration (12‑Factor compliant)
-| ENV | Default | Description |
-|-----|---------|-------------|
-| `SPRING_DATASOURCE_URL` | `jdbc:postgresql://postgres:5432/reco` | Postgres JDBC URL |
-| `KAFKA_BOOTSTRAP_SERVERS` | `kafka:9092` | Kafka brokers |
-| `REDIS_URL` | `redis://redis:6379` | Redis connection |
 
-Secrets should be provided via **Kubernetes Secrets** or **Docker secrets**.
+
+
 
 ## API (OpenAPI 3.1 excerpt)
 ```yaml
+openapi: 3.0.3
+info:
+  title: Recommendation Service API
+  version: 1.0.0
+  description: |
+    REST interface for ingesting user interactions (rating/view events),
+    searching the catalogue and retrieving personalised recommendations.
+servers:
+  - url: http://localhost:8080
 paths:
+  /v1/events:
+    post:
+      summary: Ingest a rating/view event (sync + push to Kafka)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRequest'
+      responses:
+        "202": { description: Accepted }
+  /v1/users/{userId}/events:
+    get:
+      summary: Fetch a user’s interaction history
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum: [rating, view]
+          description: Filter by event type
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/RatingEventDto'
+                    - $ref: '#/components/schemas/ViewEventDto'
+  /v1/movies:
+    get:
+      summary: Catalogue search
+      parameters:
+        - in: query
+          name: title
+          schema: { type: string }
+          description: Full or partial title to match (case‑insensitive)
+        - in: query
+          name: genre
+          schema:
+            type: array
+            items: { type: string }
+          style: form
+          explode: false
+          description: One or more genres to match
+        - in: query
+          name: minRating
+          schema: { type: number, format: double, minimum: 0, maximum: 5 }
+        - in: query
+          name: maxRating
+          schema: { type: number, format: double, minimum: 0, maximum: 5 }
+        - $ref: '#/components/parameters/Page'
+        - $ref: '#/components/parameters/Size'
+      responses:
+        "200":
+          description: Matching movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MovieDto'
   /v1/users/{userId}/recommendations:
     get:
-      summary: Top‑N recommendations for a user
-  /v1/events/rating:
-    post:
-      summary: Submit a rating event
-  /v1/events/playback:
-    post:
-      summary: Submit a playback progress event
+      summary: Personalised movie recommendations
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+        - in: query
+          name: limit
+          schema: { type: integer, minimum: 1, default: 10 }
+      responses:
+        "200":
+          description: Ranked list of recommendations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecommendationDto'
+components:
+  parameters:
+    UserId:
+      in: path
+      name: userId
+      required: true
+      schema: { type: integer, minimum: 1 }
+    Page:
+      in: query
+      name: offset
+      schema: { type: integer, minimum: 0, default: 0 }
+    Size:
+      in: query
+      name: limit
+      schema: { type: integer, minimum: 1, default: 20 }
+  schemas:
+    EventRequest:
+      type: object
+      required: [userId, movieId, type]
+      properties:
+        userId:   { type: integer, minimum: 1 }
+        movieId:  { type: integer, minimum: 1 }
+        type:     { type: string, enum: [RATING, VIEW] }
+        rating:   { type: integer, minimum: 1, maximum: 5 }
+        viewPercent: { type: integer, minimum: 1, maximum: 100 }
+    MovieDto:
+      type: object
+      properties:
+        id:        { type: integer }
+        title:     { type: string }
+        genres:    { type: array, items: { type: string } }
+        avgRating: { type: number, format: double }
+    RatingEventDto:
+      allOf:
+        - $ref: '#/components/schemas/EventBase'
+        - type: object
+          properties:
+            rating: { type: integer }
+    ViewEventDto:
+      allOf:
+        - $ref: '#/components/schemas/EventBase'
+        - type: object
+          properties:
+            viewPercent: { type: integer }
+    EventBase:
+      type: object
+      properties:
+        movieId: { type: integer }
+        ts:      { type: string, format: date-time }
+    RecommendationDto:
+      type: object
+      properties:
+        movieId: { type: integer }
+        score:   { type: number, format: double }
 ```
 Full spec: `openapi/recommendation.yaml`.
 
