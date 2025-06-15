@@ -28,29 +28,29 @@ public class InteractionService {
     private final RatingEventRepository ratingRepo;
     private final ViewEventRepository viewRepo;
 
-    //TODO forse non servono
-//    @Transactional
-//    public void addRating(Long userId, Long movieId, int stars) {
-//        ratingRepo.saveExplicit(
-//                userId,
-//                movieId,
-//                stars,
-//                RatingEvent.Source.EXPLICIT,
-//                Instant.now()
-//        );
-//
-//    }
-//
-//    @Transactional
-//    public void addView(Long userId, Long movieId, int percent) {
-//        ratingRepo.saveImplicit(
-//                userId,
-//                movieId,
-//                percent,
-//                RatingEvent.Source.EXPLICIT,
-//                Instant.now()
-//        );
-//    }
+
+    @Transactional
+    public void addRating(Long userId, Long movieId, int stars) {
+        ratingRepo.saveExplicit(
+                userId,
+                movieId,
+                stars,
+                RatingEvent.Source.EXPLICIT,
+                Instant.now()
+        );
+
+    }
+
+    @Transactional
+    public void addView(Long userId, Long movieId, int percent) {
+        ratingRepo.saveImplicit(
+                userId,
+                movieId,
+                percent,
+                RatingEvent.Source.EXPLICIT,
+                Instant.now()
+        );
+    }
 
     /* ----------  public query API (used by UserInteractionController) ---------- */
     @Transactional(readOnly = true)

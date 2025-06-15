@@ -1,4 +1,27 @@
 spring:
+  application:
+    name: recommendation-service
+  kafka:
+    bootstrap-servers: "kafka:9092"
+
+    consumer:
+      group-id: my-app-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: all
+
+
+    listener:
+      # esempi di tuning
+      type: batch          # o simple, record
+      concurrency: 3
+      missing-topics-fatal: false
+
   datasource:
     url: jdbc:h2:mem:recodb;DB_CLOSE_DELAY=-1
     driver-class-name: org.h2.Driver
@@ -15,3 +38,6 @@ spring:
 logging:
   level:
     org.hibernate.SQL: DEBUG
+
+server:
+  port: 8080

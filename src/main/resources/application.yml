@@ -1,4 +1,6 @@
 spring:
+  application:
+    name: recommendation-service
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
@@ -16,8 +18,29 @@ spring:
     enabled: true
     baseline-on-migrate: true
 
-kafka:
-  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka:9092}
+    events:
+      topic: event_stream
+    consumer:
+      group-id: reco-svc
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: com.contentwise.reco.kafka
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      transaction-id-prefix: reco-
+      properties:
+        spring.json.add.type.headers: false
+    listener:
+      missing-topics-fatal: false
+      type: single
+      ack-mode: record
+      retry:
+        enable: true
 
 redis:
   url: ${REDIS_URL:redis://localhost:6379}

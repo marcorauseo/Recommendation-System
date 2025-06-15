@@ -1,51 +1,68 @@
-version: '3.8'
-
 services:
-  reco:
-    build: .
-    container_name: reco-service
-
-    # Carica tutte le variabili definite nel file .env
-    env_file:
-      - .env
-
-    ports:
-      - "8080:8080"
-
-    depends_on:
-      kafka:
-        condition: service_healthy
-      redis:
-        condition: service_started
-
-  kafka:
-    image: bitnami/kafka:3.7
-    container_name: kafka
-    environment:
-      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
-      - ALLOW_PLAINTEXT_LISTENER=yes
-      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT
-      - KAFKA_CFG_LISTENERS=CLIENT://:9092
-      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092
-    healthcheck:
-      test: [ "CMD", "bash", "-c", "echo > /dev/tcp/localhost/9092" ]
-      interval: 10s
-      retries: 10
-    depends_on:
-      - zookeeper
-    ports:
-      - "9092:9092"
-
   zookeeper:
-    image: bitnami/zookeeper:3.9
+    image: bitnami/zookeeper:3.9.1
     container_name: zookeeper
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     ports:
       - "2181:2181"
+    networks:
+      - kafka-net
 
-  redis:
-    image: redis:7
-    container_name: redis
+
+  kafka:
+    image: bitnami/kafka:3.7.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    environment:
+
+      - KAFKA_BROKER_ID=1
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
+      - ALLOW_PLAINTEXT_LISTENER=yes
     ports:
-      - "6379:6379"
+      - "9092:9092"
+    networks:
+      - kafka-net
+
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    container_name: kafdrop
+    depends_on:
+      - kafka
+    environment:
+      - KAFKA_BROKERCONNECT=kafka:9092
+      - JVM_OPTS=-Xms64M -Xmx256M
+    ports:
+      - "9000:9000"
+    networks:
+      - kafka-net
+
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: recommendationsystem
+    depends_on:
+      - kafka
+    environment:
+      - SPRING_PROFILES_ACTIVE=h2
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      - SPRING_H2_CONSOLE_ENABLED=true
+      - SPRING_H2_CONSOLE_SETTINGS_WEB_ALLOW_OTHERS=true
+      - JAVA_TOOL_OPTIONS=-Dh2.console.settings.web-allow-others=true
+    ports:
+      - "8080:8080"
+    networks:
+      - kafka-net
+
+networks:
+  kafka-net:
+    driver: bridge
+

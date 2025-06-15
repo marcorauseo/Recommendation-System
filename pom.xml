@@ -67,6 +67,11 @@
             <version>${resilience4j.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+        </dependency>
+
         <!-- Messaging & DB drivers -->
         <dependency>
             <groupId>org.springframework.kafka</groupId>
