@@ -1,5 +1,6 @@
 package com.contentwise.reco.repository;
 
+import com.contentwise.reco.dto.IdAvgDto;
 import com.contentwise.reco.model.Movie;
 import com.contentwise.reco.model.RatingEvent;
 import com.contentwise.reco.model.User;
@@ -66,6 +67,14 @@ public interface RatingEventRepository   extends JpaRepository<RatingEvent,Long>
                       @Param("src") RatingEvent.Source src,
                       @Param("ts")   Instant ts);
 
+
+    @Query("""
+           select new com.contentwise.reco.dto.IdAvgDto(r.movie.id, avg(r.rating))
+           from RatingEvent r
+           where r.movie.id in :ids
+           group by r.movie.id
+           """)
+    List<IdAvgDto> avgByMovieIds(@Param("ids") List<Long> ids);
 
 
 }

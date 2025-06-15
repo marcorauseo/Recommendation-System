@@ -24,4 +24,5 @@ public class Movie {
             joinColumns = @JoinColumn(name = "movie_id"))
     @Column(name = "genre")
     private Set<String> genres = new HashSet<>();
+
 }
