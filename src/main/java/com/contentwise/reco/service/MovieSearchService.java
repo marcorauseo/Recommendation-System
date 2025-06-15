@@ -6,6 +6,7 @@ import com.contentwise.reco.model.Movie;
 import com.contentwise.reco.repository.*;
 import com.contentwise.reco.utils.MovieSpecs;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MovieSearchService {
 
     private final MovieRepository movieRepo;

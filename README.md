@@ -1,5 +1,22 @@
 # Video Recommendation Service
 
+## Future work
+
+-Sonar analysis and issue resolution
+
+-Increase JUnit coverage (at least 80 %)
+
+Metrics & tracing: implement Grafana, Prometheus, and a MeterRegistry to expose
+• JVM, Tomcat, Kafka-client metrics, plus custom counters & timers
+• Kafka consumer lag, JVM heap usage, DB-connection utilisation
+• One-line log entries enriched with service name, timestamp, and log level—ready for log-analytics tools
+
+-Spring Security + JWT mock (basic auth at minimum) to decouple real user IDs
+
+-Circuit breaker and resilience
+
+-Redis cache (to avoid continuous DB calls)
+
 ## How to test
 The entire application can be tested with Docker.
 
@@ -206,7 +223,4 @@ jacoco plug in, build failure if coverage under % defined in pom
 ## CI/CD pipeline
 GitHub Actions → Build → Unit & Int tests → Snyk scan → Docker build → Helm package → ArgoCD promotion (dev → staging → prod).
 
-## Future work
-* gRPC streaming endpoint for real‑time updates
-* Blue/Green + Canary via Flagger & Prometheus SLOs
-* Event sourcing & snapshotting of recommendation graphs
+
