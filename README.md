@@ -83,7 +83,7 @@ Following the **Microservice Architecture** pattern, the Recommendation service 
                Redis (read model)
 ```
 
-⚠️ **Prerequisite:** JDK 17+ is required to build and run this service (Spring Boot 3 baseline).
+⚠️ **Prerequisite:** JDK17 is required to build and run this service 
 
 ## Build & Run locally
 1. **Spin up infra**
@@ -137,7 +137,8 @@ Full spec: `openapi/recommendation.yaml`.
 | `recommendation` | denormalised top‑N list |
 
 ## Testing strategy
-* **Unit**: JUnit 5 + Mockito
+jacoco plug in, build failure if coverage under 60%
+* **Unit**: JUnit5 + Mockito
 * **Contract**: Spring Cloud Contract
 * **Integration**: Testcontainers (PostgreSQL, Kafka, Redis)
 * **E2E**: Karate DSL scenarios run against the Docker Compose stack

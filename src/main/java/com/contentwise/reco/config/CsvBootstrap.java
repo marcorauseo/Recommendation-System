@@ -50,7 +50,7 @@ public class CsvBootstrap implements CommandLineRunner {
         loadRatingsAndViews();
     }
 
-    /* ------------------------ LOADERS ------------------------ */
+
 
     private void loadMovies() throws Exception {
         try (var in = new ClassPathResource("data/movies.csv").getInputStream();

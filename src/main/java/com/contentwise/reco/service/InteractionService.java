@@ -52,7 +52,7 @@ public class InteractionService {
         );
     }
 
-    /* ----------  public query API (used by UserInteractionController) ---------- */
+
     @Transactional(readOnly = true)
     public List<?> history(Long userId, String type, Pageable page) {
         return switch (type == null ? "all" : type.toLowerCase()) {
