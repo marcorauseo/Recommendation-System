@@ -26,7 +26,7 @@ The docker-compose file spins up 4 containers.
 From a bash prompt in the project root:
 
 Make sure docker is up and running,
-i suggest using docker.desktop
+I suggest using docker desktop
 
 docker compose up --build
 
