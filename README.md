@@ -17,12 +17,16 @@ Metrics & tracing: implement Grafana, Prometheus, and a MeterRegistry to expose
 
 -Redis cache (to avoid continuous DB calls)
 
+
 ## How to test
 The entire application can be tested with Docker.
 
 The docker-compose file spins up 4 containers.
 
 From a bash prompt in the project root:
+
+Make sure docker is up and running,
+i suggest using docker.desktop
 
 docker compose up --build
 
@@ -65,22 +69,6 @@ spring-boot:run -Dspring-boot.run.profiles=local
 ## Purpose
 This microservice generates **personalized movie & series recommendations** for each logged‑in user based on collaborative filtering and content similarity.
 
-## Why a microservice?
-Following the **Microservice Architecture** pattern, the Recommendation service is a small, autonomous component owned and deployed independently by the Personalization team.
-
-## Patterns from Microservices.io applied
-
-| Concern | Pattern | How it is addressed |
-|-------|---------|--------------------|
-|
-| Service decomposition | **Decompose by business capability & sub‑domain** | Recommendation logic is isolated from Catalog, User, and Playback services, enabling independent scaling and deployments. |
-
-| Data ownership | **Database per Service** | Each service (Recommendation, User, Catalog, Billing…) owns its schema; direct cross‑service SQL joins are prohibited. |
-| Cross‑service consistency | **Saga (Choreography)** | User‑rating transactions emit `RatingCreated` events that trigger recommendation updates; |
-| Query aggregation | **API Composition & CQRS**  |
-| Isolation & performance | **Bulkhead** | Dedicated thread‑pools per outbound dependency; execution timeouts enforced. |
-| Observability | **Health Check, Distributed Tracing, Structured Logging** | Spring Boot Actuator, OpenTelemetry OTLP exporter; logs shipped to Loki via Fluent Bit. |
-| Developer productivity  | Shared Spring Boot starter provides base Dockerfile, Helm chart & plugins. |
 
 ## High‑level architecture
 ```
@@ -113,17 +101,6 @@ Following the **Microservice Architecture** pattern, the Recommendation service 
    ```bash
    ./mvnw spring-boot:run
    ```
-
-## Container/Kubernetes
-* Docker image published to `ghcr.io/contentwise/recommendation-service` on every merge to `main`.
-* Helm chart located in `/helm/reco`, install with:
-  ```bash
-  helm repo add contentwise https://charts.contentwise.com
-  helm install reco contentwise/recommendation -f values-dev.yaml
-  ```
-
-
-
 
 
 ## API (OpenAPI 3.1 excerpt)
@@ -353,8 +330,5 @@ jacoco plug in, build failure if coverage under % defined in pom
 * **Contract**: Spring Cloud Contract
 * **Integration**: Testcontainers (PostgreSQL, Kafka, Redis)
 * **E2E**: Karate DSL scenarios run against the Docker Compose stack
-
-## CI/CD pipeline
-GitHub Actions → Build → Unit & Int tests → Snyk scan → Docker build → Helm package → ArgoCD promotion (dev → staging → prod).
 
 
