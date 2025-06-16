@@ -73,18 +73,16 @@ This microservice generates **personalized movie & series recommendations** for 
 
 ## Patterns applied
 
-| Concern | Pattern | How it is addressed |
-|---------|---------|---------------------|
-
 | **Saga (Choreography)** |
-| Service decomposition | **Decompose by business capability & sub‑domain** | 
+| Service decomposition | 
+**Decompose by business capability & sub‑domain** | 
 Recommendation logic is isolated from Catalog, User, and Playback services, enabling independent scaling and deployments. |
 | Data ownership  Each service (Recommendation, User, Catalog, Billing…) owns its schema; direct cross‑service SQL joins are prohibited. |
 | Query aggregation | **API Composition & CQRS** | 
 | Isolation & performance |
 | Observability | **Health Check, Distributed Tracing, Structured Logging** 
 | Developer productivity | **Microservice Chassis** | Shared Spring Boot starter provides base Dockerfile, Helm chart & plugins. |
- | Shared Spring Boot starter provides base Dockerfile|
+
 
 
 ## High‑level architecture
